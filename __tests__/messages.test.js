@@ -36,57 +36,57 @@ describe("Test Message class", function () {
     });
   });
 
-  // test("can create", async function () {
-  //   let m = await Message.create({
-  //     from_username: "test1",
-  //     to_username: "test2",
-  //     body: "new"
-  //   });
+  test("can create", async function () {
+    let m = await Message.create({
+      from_username: "test1",
+      to_username: "test2",
+      body: "new"
+    });
 
-  //   expect(m).toEqual({
-  //     id: expect.any(Number),
-  //     from_username: "test1",
-  //     to_username: "test2",
-  //     body: "new",
-  //     sent_at: expect.any(Date),
-  //   });
-  // });
+    expect(m).toEqual({
+      id: expect.any(Number),
+      from_username: "test1",
+      to_username: "test2",
+      body: "new",
+      sent_at: expect.any(Date),
+    });
+  });
 
-  // test("can mark read", async function () {
-  //   let m = await Message.create({
-  //     from_username: "test1",
-  //     to_username: "test2",
-  //     body: "new"
-  //   });
-  //   expect(m.read_at).toBe(undefined);
+  test("can mark read", async function () {
+    let m = await Message.create({
+      from_username: "test1",
+      to_username: "test2",
+      body: "new"
+    });
+    expect(m.read_at).toBe(undefined);
 
-  //   Message.markRead(m.id);
-  //   const result = await db.query("SELECT read_at from messages where id=$1",
-  //       [m.id]);
-  //   expect(result.rows[0].read_at).toEqual(expect.any(Date));
-  // });
+    Message.markRead(m.id);
+    const result = await db.query("SELECT read_at from messages where id=$1",
+        [m.id]);
+    expect(result.rows[0].read_at).toEqual(expect.any(Date));
+  });
 
-  // test("can get", async function () {
-  //   let u = await Message.get(1);
-  //   expect(u).toEqual({
-  //     id: expect.any(Number),
-  //     body: "u1-to-u2",
-  //     sent_at: expect.any(Date),
-  //     read_at: null,
-  //     from_user: {
-  //       username: "test1",
-  //       first_name: "Test1",
-  //       last_name: "Testy1",
-  //       phone: "+14155550000",
-  //     },
-  //     to_user: {
-  //       username: "test2",
-  //       first_name: "Test2",
-  //       last_name: "Testy2",
-  //       phone: "+14155552222",
-  //     },
-  //   });
-  // });
+  test("can get", async function () {
+    let u = await Message.get(1);
+    expect(u).toEqual({
+      id: expect.any(Number),
+      body: "u1-to-u2",
+      sent_at: expect.any(Date),
+      read_at: null,
+      from_user: {
+        username: "test1",
+        first_name: "Test1",
+        last_name: "Testy1",
+        phone: "+14155550000",
+      },
+      to_user: {
+        username: "test2",
+        first_name: "Test2",
+        last_name: "Testy2",
+        phone: "+14155552222",
+      },
+    });
+  });
 });
 
 afterAll(async function() {

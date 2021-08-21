@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const { SECRET_KEY, BCRYPT_WORK_FACTOR } = require("../config");
-const { User } = require("../models/user")
+const User = require("../models/user")
 const {
   authenticateJWT,
   ensureLoggedIn,
@@ -22,17 +22,20 @@ const {
 router.post("/login", async function(req, res, next) {
   try {
     const { username, password } = req.body;
-    const result = await db.query(
+    const queryResult = await db.query(
       `SELECT password 
        FROM users
        WHERE username = $1`,
        [username]);
-    let user = result.rows[0];
-
-    if (user) {
-      if (await bcrypt.compare(password,user.password) == true) {
-        let token = jwt.sign({username},SECRET_KEY);
-        return res.json( {token} );
+    let resultRow = queryResult.rows[0];
+    if (!resultRow) {
+      throw new ExpressError('User does not exist', 400);
+    } else if (resultRow) {
+      if ((await bcrypt.compare(password, resultRow.password)) == true) {
+        let token = jwt.sign({ username }, SECRET_KEY);
+        return res.json({ token });
+      } else {
+        throw new ExpressError('Password incorrect', 400);
       }
     }
   } catch(err) {
@@ -51,18 +54,18 @@ router.post("/register", async function(req, res, next){
     if (!username || !password) {
       throw new ExpressError("Username and password required!", 400);
     }
-    debugger;
-    const user = await User.register(
+    const user = await User.register({
       username,
       password,
       first_name,
       last_name,
       phone
-      );
-    console.log(user);
+    });
+    // console.log({user});
     let token = jwt.sign(user, SECRET_KEY);
     return res.json({token});
   } catch (err) {
+    console.error(err);
     return next(err);
   }
 });
