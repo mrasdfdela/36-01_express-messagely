@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 const db = require("../db");
 const ExpressError = require("../expressError");
-const { SECRET_KEY } = require("../config");
+const { SECRET_KEY, BCRYPT_WORK_FACTOR } = require("../config");
 const { authenticateJWT } = require("../middleware/auth");
 
 
@@ -18,7 +18,7 @@ class User {
 
   static async register({username, password, first_name, last_name, phone}) { 
     const today = new Date();
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
     
     const results = await db.query(
       `INSERT INTO users (
